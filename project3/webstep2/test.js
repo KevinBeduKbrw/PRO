@@ -1,13 +1,5 @@
-import parser from "@babel/parser";
+//import parser from "@babel/parser";
 
-const code = `function square(n) {
-  return n * n;
-}`;
-
-parser.parse(code);import parser from "@babel/parser";
-
-const code = `function square(n) {
-  return n * n;
-}`;
+const code ="TEST";
 
 parser.parse(code);

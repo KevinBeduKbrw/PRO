@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "@babel/parser": "^7.16.4",
+    "@babel/traverse": "^7.16.3",
+    "@babel/types": "^7.16.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-types": "^6.20.0"
   },

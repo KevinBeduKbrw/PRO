@@ -1,0 +1,5 @@
+Enum.each(criteria,fn {key,value} -> case key do
+      "key" -> IO.puts("THIS IS KEY "<> value)
+      "id" -> IO.puts("THIS IS ID "<> value)
+      _ -> IO.puts("??")
+    end end)

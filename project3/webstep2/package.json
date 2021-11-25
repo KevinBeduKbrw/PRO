@@ -2,10 +2,12 @@
   "name": "webstep2",
   "version": "0.1.0",
   "dependencies": {
-    "babel-types": "^6.20.0",
-    "babel-plugin-syntax-jsx": "^6.18.0"
+    "@babel/parser": "^7.16.4",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-types": "^6.20.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.20.0"
   }
 }

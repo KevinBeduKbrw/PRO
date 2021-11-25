@@ -1,5 +1,6 @@
-//import parser from "@babel/parser";
+function test (){
+    var xxx = 18;
+<Declaration var="test" value={42}/>
+return "bipbip"
 
-const code ="TEST";
-
-parser.parse(code);
+}

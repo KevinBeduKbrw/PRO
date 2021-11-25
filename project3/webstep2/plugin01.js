@@ -17,9 +17,9 @@ module.exports = function (babel) {
           if(decl.attributes.length === 2){
 
             let hasValue = null,hasVar=null;
+
             decl.attributes.forEach(function(attr){
-              
-              console.log(attr.value.type)
+
               if(attr.name.name === "value"){
                 if(t.isJSXExpressionContainer(attr.value)){
                   hasValue=attr.value.expression.value
@@ -35,6 +35,7 @@ module.exports = function (babel) {
             });
 
             if(hasValue !== null && hasVar !== null){
+              
               path.replaceWith(
                 t.VariableDeclaration("var",[
                   t.variableDeclarator(

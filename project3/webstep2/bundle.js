@@ -70,13 +70,16 @@
 "use strict";
 
 
-function test() {
+function toInvoke() {
     var test;
 
     var xxx = 18;
     test = 42, void 0;
+    alert(test);
     return "bipbip";
 }
+
+toInvoke();
 
 /***/ })
 /******/ ]);

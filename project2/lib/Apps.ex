@@ -10,7 +10,7 @@ defmodule Apps do
     ]
     opts = [strategy: :one_for_one, name: Supervisor]
 
-    Logger.info("Starting application...")
+    Logger.info("Vroum vroum le diesel...")
 
     Supervisor.start_link(children, opts)
   end

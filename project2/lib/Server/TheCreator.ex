@@ -6,20 +6,6 @@ defmodule Server.TheCreator do
       import Server.TheCreator
       import Plug.Conn
 
-      #{ok,pid} = Server.Serv_supervisor.start_link([])
-      #[{_, reg, _, _}] = Supervisor.which_children(pid)
-
-      #@pid_SV pid
-      #@pid_DB reg
-
-      @pid_SV "pid"
-      @pid_DB "reg"
-
-      #IO.puts("SUPERVISOR : ")
-      #IO.inspect(@)
-      #IO.puts("DATABASE : ")
-      #IO.inspect(reg)
-
       @pathKV %{}
       @tests []
 
@@ -40,20 +26,29 @@ defmodule Server.TheCreator do
       end
 
       def call(conn, _opts) do
-        #res = Server.Database.select(@pid_DB,conn.request_path)
-        #[{_, reg, _, _}] = Supervisor.which_children(@pid_SV)
-
-        #.inspect(Server.Database.getallkeys(@pid_DB))
         res = Map.get(@pathKV,conn.request_path)
         put_resp_content_type(conn,"text/plain")
-        IO.inspect(res)
+
         case res do
           nil -> send_resp(conn,@code_my_error,@content_my_error)
           {b1,b2} -> send_resp(conn,b1,b2)
         end
       end
     end
-  end
+  end      #{ok,pid} = Server.Serv_supervisor.start_link([])
+  #[{_, reg, _, _}] = Supervisor.which_children(pid)
+
+  #@pid_SV pid
+  #@pid_DB reg
+
+  @pid_SV "pid"
+  @pid_DB "reg"
+
+  #IO.puts("SUPERVISOR : ")
+  #IO.inspect(@)
+  #IO.puts("DATABASE : ")
+  #IO.inspect(reg)
+
 
 
   defmacro my_error(opts) do
@@ -69,9 +64,6 @@ defmodule Server.TheCreator do
     quote do
       @tests [unquote(route) | @tests]
       @pathKV Map.put(@pathKV,unquote(route),unquote(block))
-      #IO.puts("added " <> unquote(route))
-
-      #Server.Database.insert(@pid_DB,unquote(route),unquote(block))
     end
   end
 

@@ -4,6 +4,7 @@
   "dependencies": {
     "chunk": "0.0.3",
     "extract-text-webpack-plugin": "^3.0.2",
+    "path": "^0.12.7",
     "react": "^15.6.2",
     "react-dom": "^15.6.2"
   },

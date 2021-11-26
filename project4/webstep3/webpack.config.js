@@ -6,10 +6,7 @@ module.exports = {
     output: { 
       path : path.resolve(__dirname, '../priv/static'),
       filename: 'bundle.js' },
-    plugins: [
-      new ExtractTextPlugin ({
-      filename: "styles.css"
-  }),],
+    
     module: {
       loaders: [
         {
@@ -27,8 +24,17 @@ module.exports = {
         },
         {
           test: /\.css$/,
-          use:  ExtractTextPlugin.extract({use: "css-loader"})
+          use:  {
+            loader: 'file-loader',
+          }
+        },
+        {
+          test:/\.(png|jpe?g|gif)$/i,
+          use:  {
+            loader: 'file-loader',
+          }
         }
-      ]
+      ],
+      
     },
   }

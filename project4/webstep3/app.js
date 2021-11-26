@@ -1,4 +1,5 @@
-require('!!file-loader?name=./webflow/ressources/jquery-3.5.1.min.dc5e7f18c8.js')
+//require('!!file-loader?name=jquery-3.5.1.min.dc5e7f18c8.js')
+require('!!file-loader?name=js/jquery.js!./webflow/ressources/jquery-3.5.1.min.dc5e7f18c8.js')
 /* required library for our React app */
 var ReactDOM = require('react-dom')
 var React = require("react")

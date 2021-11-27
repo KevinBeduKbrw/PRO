@@ -10623,7 +10623,18 @@ __webpack_require__(189);
 var Page = createReactClass({
   displayName: 'Page',
   render: function render() {
-    return React.createElement(
+
+    var orders = [{ remoteid: "000000189", custom: { customer: { full_name: "TOTO & CIE" }, billing_address: "Some where in the world" }, items: 2 }, { remoteid: "000000190", custom: { customer: { full_name: "Looney Toons" }, billing_address: "The Warner Bros Company" }, items: 3 }, { remoteid: "000000191", custom: { customer: { full_name: "Asterix & Obelix" }, billing_address: "Armorique" }, items: 29 }, { remoteid: "000000192", custom: { customer: { full_name: "Lucky Luke" }, billing_address: "A Cowboy doesn't have an address. Sorry" }, items: 0 }];
+    //var test2 = <ArrayLine ord={orders}>XXX</ArrayLine>;
+    //To render this JSON in the table, we will have to map the list on a **`JSXZ`** render. 
+    var zzzz;
+    /* orders.forEach(function(order) {
+       zzzz += <Z sel=".col-1 .labellinearray">{order.remoteid}</Z>
+     });*/
+    console.log(zzzz);
+    //orders.map( order => console.log(<div>Test</div>) )
+
+    var test = React.createElement(
       'div',
       {
         className: 'container'
@@ -10846,106 +10857,82 @@ var Page = createReactClass({
                   {
                     className: 'mainarraybody'
                   },
-                  React.createElement(
-                    'div',
-                    {
-                      className: 'linemainarraybody'
-                    },
-                    React.createElement(
+                  orders.map(function (order) {
+                    return React.createElement(
                       'div',
                       {
-                        className: 'collinemainarraybody col-1'
-                      },
-                      React.createElement(
-                        'label',
-                        {
-                          className: 'labellinearray'
-                        },
-                        '201698445'
-                      )
-                    ),
-                    React.createElement(
-                      'div',
-                      {
-                        className: 'collinemainarraybody col-2'
-                      },
-                      React.createElement(
-                        'label',
-                        {
-                          className: 'labellinearray'
-                        },
-                        ' Jean Michel'
-                      )
-                    ),
-                    React.createElement(
-                      'div',
-                      {
-                        className: 'collinemainarraybody col-3'
-                      },
-                      React.createElement(
-                        'label',
-                        {
-                          className: 'labellinearray'
-                        },
-                        '28rue de S\xE9vign\xE9',
-                        React.createElement('br', null),
-                        '75000000004 Paris'
-                      )
-                    ),
-                    React.createElement(
-                      'div',
-                      {
-                        className: 'collinemainarraybody col-4'
-                      },
-                      React.createElement(
-                        'label',
-                        {
-                          className: 'labellinearray'
-                        },
-                        '45'
-                      )
-                    ),
-                    React.createElement(
-                      'div',
-                      {
-                        className: 'collinemainarraybody col-5'
+                        className: 'linemainarraybody'
                       },
                       React.createElement(
                         'div',
                         {
-                          className: 'iconarrowrightcoldetails'
+                          className: 'collinemainarraybody col-1'
                         },
-                        '\uF061'
-                      )
-                    ),
-                    React.createElement(
-                      'div',
-                      {
-                        className: 'collinemainarraybody collinearray_pay col-end col-6'
-                      },
+                        order.remoteid
+                      ),
                       React.createElement(
                         'div',
                         {
-                          className: 'iconarrowrightcolpay'
+                          className: 'collinemainarraybody col-2'
                         },
-                        '\uF061'
+                        order.custom.customer.full_name
                       ),
                       React.createElement(
-                        'label',
+                        'div',
                         {
-                          className: 'labellinearray'
+                          className: 'collinemainarraybody col-3'
                         },
-                        'Status: init'
+                        order.custom.billing_address
                       ),
                       React.createElement(
-                        'label',
+                        'div',
                         {
-                          className: 'labellinearray'
+                          className: 'collinemainarraybody col-4'
                         },
-                        'Payment method : delivery'
+                        order.items
+                      ),
+                      React.createElement(
+                        'div',
+                        {
+                          className: 'collinemainarraybody col-5'
+                        },
+                        React.createElement(
+                          'div',
+                          {
+                            className: 'iconarrowrightcoldetails'
+                          },
+                          '\uF061'
+                        )
+                      ),
+                      React.createElement(
+                        'div',
+                        {
+                          className: 'collinemainarraybody collinearray_pay col-end col-6'
+                        },
+                        React.createElement(
+                          'div',
+                          {
+                            className: 'iconarrowrightcolpay'
+                          },
+                          '\uF061'
+                        ),
+                        React.createElement(
+                          'label',
+                          {
+                            className: 'labellinearray'
+                          },
+                          'Status: init'
+                        ),
+                        React.createElement(
+                          'label',
+                          {
+                            className: 'labellinearray'
+                          },
+                          'Payment method : delivery'
+                        )
                       )
-                    )
-                  )
+                    );
+                  })
                 )
               ),
               React.createElement(
@@ -11022,10 +11009,48 @@ var Page = createReactClass({
         )
       )
     );
+    /*var test = <JSXZ in="orders" sel=".container">
+      <Z sel=".mainarraybody">
+        <JSXZ in="orders" sel=".linemainarraybody">
+          <Z sel=".col-1">{orders[0].remoteid}</Z>
+          <Z sel=".col-2">{orders[0].custom.customer.full_name}</Z>
+          <Z sel=".col-3">{orders[0].custom.billing_address}</Z>
+          <Z sel=".col-4">{orders[0].items}</Z>   
+        </JSXZ>
+         <JSXZ in="orders" sel=".linemainarraybody">
+          <Z sel=".col-1">{orders[0].remoteid}</Z>
+          <Z sel=".col-2">{orders[0].custom.customer.full_name}</Z>
+          <Z sel=".col-3">{orders[0].custom.billing_address}</Z>
+          <Z sel=".col-4">{orders[0].items}</Z>   
+        </JSXZ>
+      </Z>
+    </JSXZ>*/
+    /*var results = 
+    <JSXZ in="orders" sel=".linemainarraybody">
+    {orders.map( order => (
+    <Z sel=".col-1">{order.remoteid}</Z>
+    
+    ))}
+    </JSXZ>
+    console.log(results)*/
+    return test;
+  }
+});
+
+var ArrayLine = createReactClass({
+  displayName: 'ArrayLine',
+  render: function render() {
+    console.log(this.props);
+    return React.createElement(
+      'div',
+      null,
+      'Test'
+    );
   }
 });
 
 ReactDOM.render(React.createElement(Page, null), document.getElementById('root'));
+//ReactDOM.render(<ArrayLine></ArrayLine>,document.getElementsByClassName("col-1"));
 
 /***/ }),
 /* 84 */

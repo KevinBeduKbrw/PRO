@@ -19,7 +19,7 @@ defmodule MyGenericServer do
 
   def call(process_pid, request) do
     send(process_pid,{:call,request,self()})
-     receive do request-> request end
+     receive do request -> request end
   end
 
   def start_link(callback_module,server_initiale_state) do

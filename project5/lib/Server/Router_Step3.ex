@@ -52,7 +52,7 @@ defmodule Server.Router_Step3 do
   end
 
   defp getOrders(conn) do
-    x = Server.Database.selectall(Elixir.TheDB)
+    x = Server.Database.selectall(Elixir.Customer_DB)
     |> Enum.reverse()
     |> Enum.reduce([], fn {z,c},acc-> [c | acc] end)
     |> Poison.encode!()
@@ -67,8 +67,8 @@ defmodule Server.Router_Step3 do
     conn = fetch_query_params(conn)
     id = Map.get(conn.params,"glob")
     |> List.to_string()
-
-    val = Server.Database.select(Elixir.TheDB,id)
+    IO.inspect(Server.Database.getallkeys(Elixir.Order_DB))
+    val = Server.Database.select(Elixir.Order_DB,id)
     case val do
       [] -> send_resp(conn, 404, "no id")
       _-> conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!(elem(Enum.at(val,0),1)))
@@ -80,7 +80,7 @@ defmodule Server.Router_Step3 do
     id = Map.get(conn.params,"glob")
     |> List.to_string()
 
-    val = Server.Database.delete(Elixir.TheDB,id)
+    val = Server.Database.delete(Elixir.Customer_DB,id)
     :timer.sleep(1000);
     case val do
       :ok -> conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!(%{"value" => "OK"}))
@@ -103,12 +103,12 @@ defmodule Server.Router_Step3 do
   end
 
   defp isudHandler(:insert,conn,id,value) do
-    Server.Database.insert(Elixir.TheDB,id,value)
+    Server.Database.insert(Elixir.Customer_DB,id,value)
     send_resp(conn, 200, "Insertion ok avec id : "<> id <> " value : "<> value)
   end
 
   defp isudHandler(:select,conn,id,_value) do
-    select = Server.Database.select(Elixir.TheDB,id)
+    select = Server.Database.select(Elixir.Customer_DB,id)
     case select do
       [] -> send_resp(conn, 200, "La bdd ne contient pas cet id")
         [{_,value}]-> send_resp(conn, 200, "Valeur : "<> value)
@@ -116,12 +116,12 @@ defmodule Server.Router_Step3 do
   end
 
   defp isudHandler(:update,conn,id,value) do
-    Server.Database.update(Elixir.TheDB,id,value)
+    Server.Database.update(Elixir.Customer_DB,id,value)
     send_resp(conn, 200, "Modification ok pour id : "<> id <> " new value : "<> value)
   end
 
   defp isudHandler(:delete,conn,id,_value) do
-    Server.Database.delete(Elixir.TheDB,id)
+    Server.Database.delete(Elixir.Customer_DB,id)
     send_resp(conn, 200, "Valeur id : "<> id <> " DELETEEEEED")
   end
 
@@ -129,7 +129,7 @@ defmodule Server.Router_Step3 do
     IO.inspect(conn)
     conn = fetch_query_params(conn)
     IO.inspect(conn.params)
-    #search = Server.Database.search(Elixir.TheDB,criteria)
+    #search = Server.Database.search(Elixir.Customer_DB,criteria)
     #IO.inspect(search)
     send_resp(conn, 200, "Not implemented IOTiredException")
   end

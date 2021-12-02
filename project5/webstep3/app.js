@@ -54,6 +54,7 @@ var remoteProps = {
     }
   },
   order: (props)=>{
+    console.log("PROPS ORDER ID",props)
     return {
       url: "/api/order/" + props.order_id,
       prop: "order"
@@ -238,11 +239,8 @@ var Orders = createReactClass(
     alert("OK");
   },
   goToOrderDetail(event){
-    let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
+    //let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
     GoTo("order",id,'');
-  },
-  showLoader(event){
-    this.props.loader({loader:true});
   },
   deleteOrder(event){
     this.props.modal({
@@ -258,7 +256,7 @@ var Orders = createReactClass(
   render(){
 /*
     */
-
+    console.log(this.props.orders.value)//onClick={this.goToOrderDetail}
     return <JSXZ in="neworders" sel=".containerr">
         <Z sel=".mainarraybody">
         
@@ -269,12 +267,23 @@ var Orders = createReactClass(
             <Z sel=".col-3">{order.custom.billing_address}</Z>
             <Z sel=".col-4">{order.items}</Z>  
             <Z sel=".col-5">
-            <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={this.goToOrderDetail}>
+            <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={()=>{GoTo("order",order.remoteid,'')}}>
                 
                 </JSXZ>  
               </Z> 
             <Z sel=".col-7">
-              <JSXZ in="neworders" sel=".icondeletearray" onClick={this.deleteOrder}>
+              <JSXZ in="neworders" sel=".icondeletearray" onClick={()=>{
+                this.props.modal({
+                  type: 'delete',
+                  title: 'Order deletion',
+                  message: `Are you sure you want to delete this ?`,
+                  orderID: order.remoteid,
+                  callback: (value)=>{
+                    console.log("SETSTATE",value)
+                  }
+                })
+
+              }}>
                 
               </JSXZ>  
             </Z> 
@@ -294,8 +303,9 @@ var Order = createReactClass(
   },
  
   render(){
-    console.log(this.props.order.value)
+    
     let ord =this.props.order.value;
+    console.log(ord)
     return <JSXZ in="neworder" sel=".containerr">
         <Z sel=".informationsbar">
           <JSXZ in="neworder" sel=".leftinformationsbar" >
@@ -305,13 +315,23 @@ var Order = createReactClass(
           <JSXZ in="neworder" sel=".rightinformationsbar" >
             
             <Z sel=".customername_informationbar">{ord.custom.customer.full_name}</Z>
-            <Z sel=".address_informationbar">{ord.custom.billing_address}</Z>
-            <Z sel=".idnumber_informationbar">{ord.remoteid}</Z>
+            <Z sel=".address_informationbar">{ord.custom.customer.email}</Z>
+            <Z sel=".idnumber_informationbar">{ord.id}</Z>
           </JSXZ>
         </Z>
         <Z sel=".containergoback">
-        <JSXZ in="neworder" sel=".gobackorderbutton" onClick={this.goBackToOrders}>
-        </JSXZ> 
+          <JSXZ in="neworder" sel=".gobackorderbutton" onClick={()=>{GoTo("orders",'','')}}>
+          </JSXZ> 
+        </Z>
+        <Z sel=".mainarraybody">
+        {ord.custom.items.map( order => (
+          <JSXZ in="neworder" sel=".linemainarraybody">
+            <Z sel=".col-1">{order.product_title}</Z>
+            <Z sel=".col-2">{order.quantity_to_fetch}</Z>
+            <Z sel=".col-3">{order.unit_price}</Z>
+            <Z sel=".col-4">{order.quantity_to_fetch * order.unit_price}</Z> 
+          </JSXZ>
+        ))}
         </Z>
       </JSXZ>
   }
@@ -355,7 +375,7 @@ var DeleteModal = createReactClass({
 var GoTo = (route, params, query) => {
   var qs = Qs.stringify(query)
   var url = routes[route].path(params) + ((qs=='') ? '' : ('?'+qs))
- 
+  console.log("RP",url)
   history.pushState({}, "", url)
   onPathChange()
 }
@@ -376,6 +396,7 @@ function onPathChange() {
   //We try to match  the requested path to one our our routes
   for(var key in routes) {
     routeProps = routes[key].match(path, qs)
+    console.log("RP",routeProps)
     if(routeProps){
         route = key
           break;

@@ -14,15 +14,13 @@ defmodule Apps do
 
     ret = Supervisor.start_link(children, opts)
 
+    path = Path.join(File.cwd!,"resources/chap1/orders_dump/orders_chunk0.json")
+    JsonLoader.load_to_database(TheDB,path)
 
-    #GenServer.cast(TheDB,{:insert, "000000189" ,
-    #"{'remoteid': '000000189','custom': {'customer': {'full_name': 'TOTO & CIE'},'billing_address': 'Some where in the world'},'items': 2}"})
-    #GenServer.cast(TheDB,{:insert, "000000190" ,
-    #"{'remoteid': '000000190','custom': {'customer': {'full_name': 'Looney Toons'},'billing_address': 'The Warner Bros Company'},'items': 3}"})
-    #GenServer.cast(TheDB,{:insert, "000000191" ,
-    #"{'remoteid': '000000191','custom': {'customer': {'full_name': 'Asterix & Obelix'}, 'billing_address': 'Armorique'},'items': 29}"})
-    #GenServer.cast(TheDB,{:insert, "000000192" ,
-    #"{'remoteid': '000000192','custom': {'customer': {'full_name': 'Lucky Luke'},'billing_address': 'A Cowboy doesn't have an address. Sorry'},'items': 0}"})
+    ret
+  end
+
+  def loadJSON do
 
     GenServer.cast(TheDB,{:insert, "000000189" ,
     %{remoteid: "000000189",
@@ -59,6 +57,5 @@ defmodule Apps do
     },
     items: 0}
     })
-    ret
   end
 end

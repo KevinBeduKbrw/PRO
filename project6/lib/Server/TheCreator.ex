@@ -41,8 +41,6 @@ defmodule Server.TheCreator do
   #@pid_SV pid
   #@pid_DB reg
 
-  @pid_SV "pid"
-  @pid_DB "reg"
 
   #IO.puts("SUPERVISOR : ")
   #IO.inspect(@)

@@ -11448,12 +11448,27 @@ var Orders = createReactClass({
       return console.log("XX", err);
     }));
   },
+  pageNumberChanged: function pageNumberChanged(number) {
+    var _this4 = this;
+
+    if (this.state.searchPage <= 1 && number === -1) {
+      return;
+    }
+    if (this.state.searchPage <= 2 && number === -2) {
+      return;
+    }
+    this.setState({
+      searchPage: this.state.searchPage + number
+    }, function () {
+      _this4.search();
+    });
+  },
   goToOrderDetail: function goToOrderDetail(event) {
     //let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
     GoTo("order", id, '');
   },
   render: function render() {
-    var _this4 = this;
+    var _this5 = this;
 
     console.log("ORDERS", this.props);
     return React.createElement(
@@ -11514,10 +11529,11 @@ var Orders = createReactClass({
               required: '',
               onKeyPress: function onKeyPress(event) {
                 if (event.charCode === 13) {
-                  _this4.search();
+                  _this5.search();
                 }
-              }, onChange: function onChange(event) {
-                _this4.setState({ searchValue: $(event.target).val() });
+              },
+              onChange: function onChange(event) {
+                _this5.setState({ searchValue: $(event.target).val() });
               } })
           ),
           React.createElement(
@@ -11730,13 +11746,13 @@ var Orders = createReactClass({
                       className: 'icondeletearray',
                       onClick: function onClick() {
 
-                        _this4.props.modal({
+                        _this5.props.modal({
                           type: 'delete',
                           title: 'Order deletion',
                           message: 'Are you sure you want to delete this ?',
                           callback: function callback(value) {
                             if (value === true) {
-                              _this4.props.loader(HTTP.delete("api/delete/" + order.id).then(function (res) {
+                              _this5.props.loader(HTTP.delete("api/delete/" + order.id).then(function (res) {
                                 delete browserState.orders;
                                 GoTo("orders");
                                 return true;
@@ -11769,15 +11785,8 @@ var Orders = createReactClass({
               'label',
               {
                 className: 'labelpagenumber labelpagenumber-1',
-                onClick: function onClick() {
-                  if (_this4.state.searchPage <= 2) {
-                    return;
-                  }
-                  _this4.setState({
-                    searchPage: _this4.state.searchPage - 2
-                  }, function () {
-                    _this4.search();
-                  });
+                onClick: function onClick(e) {
+                  _this5.pageNumberChanged(-2);
                 } },
               this.state.searchPage == 1 || this.state.searchPage == 2 ? "" : this.state.searchPage - 2
             ),
@@ -11786,14 +11795,7 @@ var Orders = createReactClass({
               {
                 className: 'labelpagenumber labelpagenumber-2',
                 onClick: function onClick() {
-                  if (_this4.state.searchPage <= 1) {
-                    return;
-                  }
-                  _this4.setState({
-                    searchPage: _this4.state.searchPage - 1
-                  }, function () {
-                    _this4.search();
-                  });
+                  _this5.pageNumberChanged(-1);
                 } },
               this.state.searchPage == 1 ? "" : this.state.searchPage - 1
             ),
@@ -11809,11 +11811,7 @@ var Orders = createReactClass({
               {
                 className: 'labelpagenumber labelpagenumber-4',
                 onClick: function onClick() {
-                  _this4.setState({
-                    searchPage: _this4.state.searchPage + 1
-                  }, function () {
-                    _this4.search();
-                  });
+                  _this5.pageNumberChanged(1);
                 } },
               this.state.searchPage + 1
             ),
@@ -11822,11 +11820,7 @@ var Orders = createReactClass({
               {
                 className: 'labelpagenumber labelpagenumber-5',
                 onClick: function onClick() {
-                  _this4.setState({
-                    searchPage: _this4.state.searchPage + 2
-                  }, function () {
-                    _this4.search();
-                  });
+                  _this5.pageNumberChanged(2);
                 } },
               this.state.searchPage + 2
             )

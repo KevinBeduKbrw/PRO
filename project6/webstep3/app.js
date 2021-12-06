@@ -260,6 +260,17 @@ var Orders = createReactClass(
 
     
   },
+  pageNumberChanged(number){
+    if(this.state.searchPage <= 1 && number === -1){
+      return;
+    }
+    if(this.state.searchPage <= 2 && number === -2){
+      return;
+    }
+    this.setState({
+      searchPage:this.state.searchPage + number
+      },()=>{this.search()})
+  },
   goToOrderDetail(event){
     //let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
     GoTo("order",id,'');
@@ -318,43 +329,26 @@ var Orders = createReactClass(
         if(event.charCode === 13){
           this.search()
         }
-      }} onChange={(event)=>{this.setState({searchValue:$(event.target).val()})}}>
+      }} 
+      onChange={(event)=>{this.setState({searchValue:$(event.target).val()})}}>
         <ChildrenZ></ChildrenZ>
       </Z>
       <Z sel =".w-button" onClick={this.search}>
         <ChildrenZ></ChildrenZ>
       </Z>
-        <Z sel=".labelpagenumber-1" onClick={()=>{
-          if(this.state.searchPage <= 2){
-            return;
-          }
-          this.setState({
-          searchPage:this.state.searchPage - 2
-          },()=>{this.search()})
-          
-          }}>{this.state.searchPage == 1 || this.state.searchPage == 2 ? "" : this.state.searchPage-2 }</Z>
-        <Z sel=".labelpagenumber-2" onClick={()=>{
-          if(this.state.searchPage <= 1){
-            return;
-          }
-          this.setState({
-          searchPage:this.state.searchPage - 1
-          },()=>{this.search()})
-
-          }}>{this.state.searchPage == 1 ? "" : this.state.searchPage -1 }</Z>
+        <Z sel=".labelpagenumber-1" onClick={(e)=>{this.pageNumberChanged(-2);}}>
+          {this.state.searchPage == 1 || this.state.searchPage == 2 ? "" : this.state.searchPage-2 }
+        </Z>
+        <Z sel=".labelpagenumber-2" onClick={()=>{this.pageNumberChanged(-1);}}>
+          {this.state.searchPage == 1 ? "" : this.state.searchPage -1 }
+        </Z>
         <Z sel=".labelpagenumber-3">{this.state.searchPage}</Z>
-        <Z sel=".labelpagenumber-4" onClick={()=>{
-          this.setState({
-          searchPage:this.state.searchPage + 1
-          },()=>{this.search()})
-
-          }}>{this.state.searchPage + 1}</Z>
-        <Z sel=".labelpagenumber-5" onClick={()=>{
-          this.setState({
-          searchPage:this.state.searchPage + 2
-          },()=>{this.search()})
-          
-          }}>{this.state.searchPage + 2}</Z>
+        <Z sel=".labelpagenumber-4" onClick={()=>{this.pageNumberChanged(1);}}>
+          {this.state.searchPage + 1}
+        </Z>
+        <Z sel=".labelpagenumber-5" onClick={()=>{this.pageNumberChanged(2);}}>
+          {this.state.searchPage + 2}
+        </Z>
       
       </JSXZ>
   }

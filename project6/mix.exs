@@ -15,7 +15,8 @@ defmodule Project2.MixProject do
   def application do
     [
       extra_applications: [:logger, :inets, :ssl],
-      mod: {TutoElixirKBRW, []}
+      mod: {Apps, []}
+      #mod: {TutoElixirKBRW, []}
     ]
   end
 

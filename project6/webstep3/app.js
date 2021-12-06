@@ -1,19 +1,39 @@
 var Qs = require('qs')
 var Cookie = require('cookie')
-require('!!file-loader?name=js/jquery.js!./webflow/ressources/jquery-3.5.1.min.dc5e7f18c8.js')
-require('!!file-loader?name=loader.gif!./webflow/ressources/loader.gif')
+
 /* required library for our React app */
 var ReactDOM = require('react-dom')
 var React = require("react")
 var createReactClass = require('create-react-class')
 var XMLHttpRequest = require("xhr2")
 const { Children } = require('react')
-//const { resolve } = require('path/posix')
-/* required css for our application */
+
+require('!!file-loader?name=js/jquery.js!./webflow/ressources/jquery-3.5.1.min.dc5e7f18c8.js')
+require('!!file-loader?name=loader.gif!./webflow/ressources/loader.gif')
 require("./webflow/ressources/chapitre4.webflow.812bac897.css");
 require("./webflow/ressources/modal.css");
 
 var browserState = {Child: Child}
+
+var routes = {
+  "orders": {
+    path: (params) => {
+      return "/";
+    },
+    match: (path, qs) => {
+      return (path == "/") && {handlerPath: [Layout, Header,Orders]}
+    }
+  }, 
+  "order": {
+    path: (params) => {
+      return "/order/" + params;
+    },
+    match: (path, qs) => {
+      var r = new RegExp("/order/([^/]*)$").exec(path)
+      return r && {handlerPath: [Layout, Header, Order],  order_id: r[1]}
+    }
+  }
+};
 
 var remoteProps = {
   user: (props)=>{
@@ -38,14 +58,7 @@ var remoteProps = {
       url: "/api/order/" + props.order_id,
       prop: "order"
     }
-  },
-  modal:(props=>{
-      console.log("IN MODAL RT",this.props)
-      return{
-        url: "/api/delete/",
-        prop: "orders"
-      }
-  })
+  }
 }
 
 var cn = function(){
@@ -79,7 +92,6 @@ var HTTP = new (function(){
     req.setRequestHeader("content-type","application/json")
     req.onload = ()=>{
       if(req.status >= 200 && req.status < 300){
-        
         resolve(req.responseText && JSON.parse(req.responseText))
       }else{
         reject({http_code: req.status})
@@ -107,8 +119,8 @@ var Page = createReactClass( {
     var test = <JSXZ in="orders" sel=".container">
       <Z sel=".mainarraybody">
         
-        {orders.map( order => (
-          <JSXZ in="orders" sel=".linemainarraybody">
+        {orders.map( (order,i) => (
+          <JSXZ in="orders" sel=".linemainarraybody" key={i}>
             <Z sel=".col-1">{order.remoteid}</Z>
             <Z sel=".col-2">{order.custom.customer.full_name}</Z>
             <Z sel=".col-3">{order.custom.billing_address}</Z>
@@ -142,16 +154,6 @@ var Layout = createReactClass(
   modal(spec){
     this.setState({modal: {
       ...spec, callback: (res)=>{
-        
-        if(res === true){
-          this.loader(
-            HTTP.delete("api/delete/"+this.state.modal.orderID).then((res) => {
-              delete browserState.orders
-              GoTo("orders",'','');
-            },(err)=>console.log(err))
-          );
-        }
-
         this.setState({modal: null},()=>{
           if(spec.callback) spec.callback(res)
         })
@@ -159,34 +161,38 @@ var Layout = createReactClass(
     }})
   },
   loader(promise){
-    this.setState({load:<Loader {...this.props}/>});
+    this.setState({
+      load:<Loader {...this.props}/>
+    });
     var p = new Promise(function(resolve, reject)
     {
       promise.then((val)=>{
-        resolve("load resolve END");
+        resolve(val);
       },
       (error)=>{
-        reject("load error END")
+        resolve(error)
       })
      
-    }).then((res)=> {this.setState({load:null});});
+    }).then((res)=> {  
+        this.setState({load:null});   
+    });
+      
     return p
 
   },
   render(){
-    
+    console.log("LAYOUT " , this.props,browserState)
     var _props = {
-      ...this.props, modal: this.modal, load : this.state.load
+      ...this.props, modal: this.modal, loader : this.loader
     }
 
     var modal_component = {
       'delete': (props) => <DeleteModal {...props}/>
     }[this.state.modal && this.state.modal.type];
+
     modal_component = modal_component && modal_component(this.state.modal)
 
     //loader_component = loader_component && loader_component(this.state.loader)
-    console.log("LOADER",this.state.load === null)
-
     return <JSXZ in="neworders" sel=".layout">
         <Z sel=".modal-wrapper" className={cn(classNameZ, {'hidden': !modal_component})}>
         {modal_component}
@@ -207,7 +213,7 @@ var Header = createReactClass(
     remoteProps:[remoteProps.user] 
   },
   render(){
-    
+    console.log("HEADER " , this.props)
     return <JSXZ in="neworders" sel=".header">
       
         <Z sel=".header-container">
@@ -218,56 +224,138 @@ var Header = createReactClass(
 });
 
 var Orders = createReactClass(
-  {statics: {
+  {
+    getInitialState: function() {
+      
+    return {
+      searchValue:"",
+      searchPage:1
+    };
+    
+  },
+  statics: {
     remoteProps:[remoteProps.orders] 
   },
   alertTest(){
     alert("OK");
   },
+  search(){
+
+
+      var req = "api/kbedu_orders?page="+this.state.searchPage+"&rows=30&type=nat_order&query=" + (typeof this.state.searchValue === "undefined" ? "*" : this.state.searchValue)
+      this.props.loader(
+        HTTP.get(req).then((res) => {
+          browserState={
+            ...browserState,
+            orders :{
+              url : browserState.orders.url,
+              value: res
+            }
+          }
+
+          GoTo("orders");
+          return res
+        },(err)=>console.log("XX",err))
+      )
+
+    
+  },
   goToOrderDetail(event){
-    let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
+    //let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
     GoTo("order",id,'');
   },
-  showLoader(event){
-    this.props.loader({loader:true});
-  },
-  deleteOrder(event){
-    this.props.modal({
-      type: 'delete',
-      title: 'Order deletion',
-      message: `Are you sure you want to delete this ?`,
-      orderID: $(event.target).parents(".linemainarraybody").children(".col-1").text(),
-      callback: (value)=>{
-        console.log("SETSTATE",value)
-      }
-    })
-  },
+  
   render(){
-/*
-    */
-
+    console.log("ORDERS",this.props)
     return <JSXZ in="neworders" sel=".containerr">
         <Z sel=".mainarraybody">
         
         {this.props.orders.value.map( order => (
-          <JSXZ in="neworders" sel=".linemainarraybody" key={order.remoteid}>
-            <Z sel=".col-1" onClick={this.alertTest}>{order.remoteid}</Z>
+          <JSXZ in="neworders" sel=".linemainarraybody" key={order.id}>
+            <Z sel=".col-1">{order.id}</Z>
             <Z sel=".col-2">{order.custom.customer.full_name}</Z>
-            <Z sel=".col-3">{order.custom.billing_address}</Z>
-            <Z sel=".col-4">{order.items}</Z>  
+            <Z sel=".col-3">{order.custom.billing_address.street[0]}</Z>
+            <Z sel=".col-4">{ order.custom.items.reduce((p,n)=> p+n.quantity_to_fetch, 0)  }</Z>  
             <Z sel=".col-5">
-            <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={this.goToOrderDetail}>
+            <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={()=>{GoTo("order",order.id,'')}}>
                 
                 </JSXZ>  
               </Z> 
             <Z sel=".col-7">
-              <JSXZ in="neworders" sel=".icondeletearray" onClick={this.deleteOrder}>
+              <JSXZ in="neworders" sel=".icondeletearray" onClick={()=>{
+
+                this.props.modal({
+                  type: 'delete',
+                  title: 'Order deletion',
+                  message: `Are you sure you want to delete this ?`,
+                  callback: (value)=>{
+                    if(value === true){
+                      this.props.loader(
+                        HTTP.delete("api/delete/"+order.id).then(
+                          (res)=>{
+                            delete browserState.orders
+                            GoTo("orders")
+                            return true
+                          },
+                          (rej)=>{
+                            console.log("ERROR",rej)
+                            return false
+                          }
+                        )
+                      )
+                    }
+                  }
+                })
+
+              }}>
                 
               </JSXZ>  
             </Z> 
           </JSXZ>
         ))}
       </Z>
+      <Z sel=".text-field" onKeyPress={(event)=>{
+        if(event.charCode === 13){
+          this.search()
+        }
+      }} onChange={(event)=>{this.setState({searchValue:$(event.target).val()})}}>
+        <ChildrenZ></ChildrenZ>
+      </Z>
+      <Z sel =".w-button" onClick={this.search}>
+        <ChildrenZ></ChildrenZ>
+      </Z>
+        <Z sel=".labelpagenumber-1" onClick={()=>{
+          if(this.state.searchPage <= 2){
+            return;
+          }
+          this.setState({
+          searchPage:this.state.searchPage - 2
+          },()=>{this.search()})
+          
+          }}>{this.state.searchPage == 1 || this.state.searchPage == 2 ? "" : this.state.searchPage-2 }</Z>
+        <Z sel=".labelpagenumber-2" onClick={()=>{
+          if(this.state.searchPage <= 1){
+            return;
+          }
+          this.setState({
+          searchPage:this.state.searchPage - 1
+          },()=>{this.search()})
+
+          }}>{this.state.searchPage == 1 ? "" : this.state.searchPage -1 }</Z>
+        <Z sel=".labelpagenumber-3">{this.state.searchPage}</Z>
+        <Z sel=".labelpagenumber-4" onClick={()=>{
+          this.setState({
+          searchPage:this.state.searchPage + 1
+          },()=>{this.search()})
+
+          }}>{this.state.searchPage + 1}</Z>
+        <Z sel=".labelpagenumber-5" onClick={()=>{
+          this.setState({
+          searchPage:this.state.searchPage + 2
+          },()=>{this.search()})
+          
+          }}>{this.state.searchPage + 2}</Z>
+      
       </JSXZ>
   }
 });
@@ -281,7 +369,7 @@ var Order = createReactClass(
   },
  
   render(){
-    console.log(this.props.order.value)
+    
     let ord =this.props.order.value;
     return <JSXZ in="neworder" sel=".containerr">
         <Z sel=".informationsbar">
@@ -291,14 +379,26 @@ var Order = createReactClass(
           </JSXZ>
           <JSXZ in="neworder" sel=".rightinformationsbar" >
             
-            <Z sel=".customername_informationbar">{ord.custom.customer.full_name}</Z>
-            <Z sel=".address_informationbar">{ord.custom.billing_address}</Z>
-            <Z sel=".idnumber_informationbar">{ord.remoteid}</Z>
+            <Z sel=".customername_informationbar">{ord.length === 0 ? "" : ord.custom.customer.full_name}</Z>
+            <Z sel=".address_informationbar">{ord.length === 0 ? "" :ord.custom.customer.email}</Z>
+            <Z sel=".idnumber_informationbar">{ord.length === 0 ? "" :ord.id}</Z>
           </JSXZ>
         </Z>
         <Z sel=".containergoback">
-        <JSXZ in="neworder" sel=".gobackorderbutton" onClick={this.goBackToOrders}>
-        </JSXZ> 
+          <JSXZ in="neworder" sel=".gobackorderbutton" onClick={()=>{GoTo("orders",'','')}}>
+          </JSXZ> 
+        </Z>
+        <Z sel=".mainarraybody">
+        {
+        ord.length === 0 ? "" : 
+        ord.custom.items.map( (order,i) => (
+          <JSXZ in="neworder" sel=".linemainarraybody" key={i}>
+            <Z sel=".col-1">{order.product_title}</Z>
+            <Z sel=".col-2">{order.quantity_to_fetch}</Z>
+            <Z sel=".col-3">{order.unit_price}</Z>
+            <Z sel=".col-4">{order.quantity_to_fetch * order.unit_price}</Z> 
+          </JSXZ>
+        ))}
         </Z>
       </JSXZ>
   }
@@ -312,7 +412,6 @@ var ErrorPage= createReactClass({
 
 var Loader= createReactClass({
   render(){
-    console.log('in LOADER MODAL')
     return <JSXZ in="loader" sel=".loader-content">
       
     </JSXZ>
@@ -327,7 +426,6 @@ var DeleteModal = createReactClass({
     this.props.callback(false);
   },
   render(){
-    console.log('in DELETE MODAL')
     return <JSXZ in="modal" sel=".modal-content">
       <Z sel=".titlemodal">{this.props.title}</Z>
       <Z sel=".messagemodal">{this.props.message}</Z>
@@ -337,35 +435,17 @@ var DeleteModal = createReactClass({
   }
 })
 
-var routes = {
-  "orders": {
-    path: (params) => {
-      return "/";
-    },
-    match: (path, qs) => {
-      return (path == "/") && {handlerPath: [Layout, Header,Orders]}
-    }
-  }, 
-  "order": {
-    path: (params) => {
-      return "/order/" + params;
-    },
-    match: (path, qs) => {
-      var r = new RegExp("/order/([^/]*)$").exec(path)
-      return r && {handlerPath: [Layout, Header, Order],  order_id: r[1]}
-    }
-  }
-};
+
 
 var GoTo = (route, params, query) => {
   var qs = Qs.stringify(query)
   var url = routes[route].path(params) + ((qs=='') ? '' : ('?'+qs))
- 
   history.pushState({}, "", url)
   onPathChange()
 }
 
 function onPathChange() {
+
   var path = location.pathname
   var qs = Qs.parse(location.search.slice(1))
   var cookies = Cookie.parse(document.cookie)
@@ -399,33 +479,15 @@ function onPathChange() {
       //Log our new browserState
       //Render our components using our remote data
       ReactDOM.render(<Child {...browserState}/>, document.getElementById('root'))
-
-      console.log("browserState",browserState);
-      /*
-      playThing = this.props.modal({
-        modal:false,
-        callback:()=>{console.log("CALLBACK")}
-      });*/
     }, 
     (res) => {
       ReactDOM.render(<ErrorPage message={"Shit happened"} code={res.http_code}/>, document.getElementById('root'))
     })
-    
-
-  /*
-    addRemoteProps(browserState)
-  //If we don't have a match, we render an Error component
-  if(!route)
-    return ReactDOM.render(<ErrorPage message={"Not Found 404BOUM"} code={404}/>, document.getElementById('root'))
-  
-  ReactDOM.render(<Child {...browserState}/>, document.getElementById('root'))*/
-  
 }
 
 
 
 function addRemoteProps(props){
-  
   return new Promise((resolve, reject)=>{
   var remoteProps = Array.prototype.concat.apply([],
     props.handlerPath
@@ -474,8 +536,7 @@ window.addEventListener("popstate", (event)=>{
  })
 
  onPathChange()
- //GoTo(location.pathname,"",location.search)
-//onPathChange()
+
 
 
 

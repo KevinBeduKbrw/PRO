@@ -4,7 +4,7 @@ defmodule Apps do
 
   def start(_type, _args) do
     children = [
-      {Server.Serv_supervisor,name: SERV,dbname: TheDB},
+      {Server.Serv_supervisor,name: SERV,customer: Customer_DB,order: Order_DB},
       {Plug.Cowboy, scheme: :http, plug: Server.Router_Step3, options: [port: 4001]}
 
     ]
@@ -14,16 +14,18 @@ defmodule Apps do
 
     ret = Supervisor.start_link(children, opts)
 
-    path = Path.join(File.cwd!,"resources/chap1/orders_dump/orders_chunk0.json")
-    JsonLoader.load_to_database(TheDB,path)
+    #Apps.loadJSON
+
+    #path = Path.join(File.cwd!,"ressources/orders_chunk0.json")
+    #JsonLoader.load_to_database(Order_DB,path)
 
     ret
   end
 
   def loadJSON do
 
-    GenServer.cast(TheDB,{:insert, "000000189" ,
-    %{remoteid: "000000189",
+    GenServer.cast(Customer_DB,{:insert, "nat_order000147778" ,
+    %{remoteid: "nat_order000147778",
     custom:
     %{customer: %{full_name: "TOTO & CIE"},
     billing_address: "Some where in the world"
@@ -31,8 +33,8 @@ defmodule Apps do
     items: 2}
     })
 
-    GenServer.cast(TheDB,{:insert, "000000190" ,
-    %{remoteid: "000000190",
+    GenServer.cast(Customer_DB,{:insert, "nat_order000147703" ,
+    %{remoteid: "nat_order000147703",
     custom:
     %{customer: %{full_name: "Looney Toons"},
     billing_address: "The Warner Bros Company"
@@ -40,8 +42,8 @@ defmodule Apps do
     items: 3}
     })
 
-    GenServer.cast(TheDB,{:insert, "000000191" ,
-    %{remoteid: "000000191",
+    GenServer.cast(Customer_DB,{:insert, "nat_order000147800" ,
+    %{remoteid: "nat_order000147800",
     custom:
     %{customer: %{full_name: "Asterix & Obelix"},
     billing_address: "Armorique"
@@ -49,8 +51,8 @@ defmodule Apps do
     items: 29}
     })
 
-    GenServer.cast(TheDB,{:insert, "000000192" ,
-    %{remoteid: "000000192",
+    GenServer.cast(Customer_DB,{:insert, "nat_order000147780" ,
+    %{remoteid: "nat_order000147780",
     custom:
     %{customer: %{full_name: "Loucky Louke"},
     billing_address: "A Cowboy doesn't have an address. Sorry"

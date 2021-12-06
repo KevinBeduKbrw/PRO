@@ -66,12 +66,15 @@ defmodule Server.Router_Step3 do
   end
 
   defp isudHandler(:search,conn) do
-    IO.inspect(conn)
     conn = fetch_query_params(conn)
-    IO.inspect(conn.params)
-    #search = Server.Database.search(Elixir.TheDB,criteria)
-    #IO.inspect(search)
-    send_resp(conn, 200, "Not implemented IOTiredException")
+    id = Map.get(conn.params,"id")
+    value = Map.get(conn.params,"value")
+    IO.inspect(id)
+    IO.inspect(value)
+
+    {_,res} = Server.Database.search(Elixir.TheDB,[{id,value}])
+    IO.inspect(res)
+    conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!(res))
   end
 
 

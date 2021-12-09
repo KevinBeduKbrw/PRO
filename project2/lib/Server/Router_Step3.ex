@@ -67,10 +67,10 @@ defmodule Server.Router_Step3 do
 
   defp isudHandler(:search,conn) do
     conn = fetch_query_params(conn)
+
     id = Map.get(conn.params,"id")
     value = Map.get(conn.params,"value")
-    IO.inspect(id)
-    IO.inspect(value)
+
 
     {_,res} = Server.Database.search(Elixir.TheDB,[{id,value}])
     IO.inspect(res)

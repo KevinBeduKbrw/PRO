@@ -21,6 +21,8 @@ defmodule Server.Router_Step3 do
 
   delete "/api/delete/*glob", do: deleteOrder(conn)
 
+  get "/api/order/payment/*glob", do: doPayment(conn)
+
   get "/static/loader.gif", do: send_file(conn, 200, "priv/static/loader.gif")
 
   get _ do
@@ -54,20 +56,22 @@ defmodule Server.Router_Step3 do
     end
   end
 
+  defp doPayment(conn) do
+
+  end
+
   defp getOrder(conn) do
     conn = fetch_query_params(conn)
     id = Map.get(conn.params,"glob")
     |> List.to_string()
 
 
-    {:ok,{{_,errorCode,_message},_headers,body}} = Riak.getValueFromKey(id)
-    res = body
-    |> to_string
-    |> Poison.decode!
+    val = Riak.getValueFromKey(id)
 
-    case errorCode do
-      404 -> conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!([]))
-      _   -> conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!(res))
+
+    case val do
+      :error -> conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!([]))
+      _      -> conn |> put_resp_content_type("application/json") |> send_resp(200, Poison.encode!(val))
     end
   end
 
@@ -115,7 +119,7 @@ defmodule Server.Router_Step3 do
     |> Enum.reduce([],fn x,acc -> [Map.get(x,"id")|acc] end)
     |> List.flatten()
     |> Task.async_stream(Riak, :getValueFromKey, [], max_concurrency: 10)
-    |> Enum.map(fn {:ok, {:ok,{{_,ec,_message},hd,bd}}} -> Poison.decode!(to_string(bd)) end)
+    |> Enum.map(fn {:ok, key} -> key end)
     |> Poison.encode!()
   end
 

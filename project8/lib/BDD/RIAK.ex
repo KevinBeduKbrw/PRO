@@ -100,8 +100,11 @@ defmodule Riak do
 
   def getValueFromKey(key) do
     msg = {:ok,{{_,errorCode,_message},_headers,body}}  = :httpc.request(:get,{'#{Riak.url()}/buckets/#{@bucketName}/keys/#{key}', Riak.auth_header()},[],[])
-    msg
 
+    case errorCode do
+      404 -> :error
+      _   -> body |> to_string |> Poison.decode!
+    end
   end
 
 
@@ -135,7 +138,7 @@ defmodule Riak do
     IO.inspect(req)
   end
 
-  def setAllStatusValuesToInit() do
+  def setAllStatusValuesToSmthgs(value) do
     Riak.getAllKeys()
     |> Enum.map(fn key ->
       {:ok,{{_,errorCode,_message},_headers,body}} = Riak.getValueFromKey(key)
@@ -144,9 +147,9 @@ defmodule Riak do
       |> Poison.decode!
 
       case Map.get(Map.get(res,"status"),"state") do
-        "init" -> false
+        value -> false
         _      ->
-          valueUpdated = update_in(res,["status","state"],fn x -> "init" end)
+          valueUpdated = update_in(res,["status","state"],fn x -> value end)
           Riak.insertKeyValue(key,Poison.encode!(valueUpdated))
 
       end

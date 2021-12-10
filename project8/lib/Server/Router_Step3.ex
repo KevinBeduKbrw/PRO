@@ -15,13 +15,15 @@ defmodule Server.Router_Step3 do
 
   get "/api/orders", do: getOrders(conn)
 
+  get "/api/order/payment/*glob", do: doPayment(conn)
+
   get "/api/order/*glob", do: getOrder(conn)
 
   get "/api/kbedu_orders", do: search(conn)
 
   delete "/api/delete/*glob", do: deleteOrder(conn)
 
-  get "/api/order/payment/*glob", do: doPayment(conn)
+
 
   get "/static/loader.gif", do: send_file(conn, 200, "priv/static/loader.gif")
 
@@ -58,6 +60,17 @@ defmodule Server.Router_Step3 do
 
   defp doPayment(conn) do
 
+    id = Map.get(conn.params,"glob")
+    |> List.to_string()
+
+    TransactionGenServer.start_link()
+    IO.inspect(id)
+    res = TransactionGenServer.makePayment(id)
+    TransactionGenServer.stop()
+    IO.inspect(res)
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, Poison.encode!(res))
   end
 
   defp getOrder(conn) do

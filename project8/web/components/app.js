@@ -185,13 +185,16 @@ var Layout = createReactClass(
     var p = new Promise(function(resolve, reject)
     {
       promise.then((val)=>{
+        console.log("RESOLVER",val)
         resolve(val);
       },
       (error)=>{
+        console.log("REJECTED",error)
         resolve(error)
       })
      
     }).then((res)=> {  
+      console.log("cbthen ",res)
         this.setState({load:null});   
     });
       
@@ -306,10 +309,41 @@ var Orders = createReactClass(
             <Z sel=".col-3">{order.custom.billing_address.street[0]}</Z>
             <Z sel=".col-4">{ order.custom.items.reduce((p,n)=> p+n.quantity_to_fetch, 0)  }</Z>  
             <Z sel=".col-5">
-            <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={()=>{Link.GoTo("order",order.id,'')}}>
+              <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={()=>{Link.GoTo("order",order.id,'')}}>
                 
-                </JSXZ>  
-              </Z> 
+              </JSXZ>  
+            </Z> 
+            <Z sel=".col-6">
+              <JSXZ in="neworders" sel=".iconarrowrightcolpay" 
+                  onClick={()=>{
+
+                  this.props.loader(
+                    HTTP.get("api/order/payment/"+order.id).then(
+                      (res)=>{
+                        console.log(res)
+                        delete browserState.orders
+                        Link.GoTo("order",order.id,'')
+                        return true
+                      },
+                      (rej)=>{
+                        console.log("ERROR",rej)
+                        return false
+                      }
+                    )
+                  )
+                  }}>
+                     
+                     
+              </JSXZ>
+              <JSXZ in="neworders" sel=".statuscol6">
+                <Z sel=".containerstatus">{order.status.state}</Z>
+              </JSXZ>
+              <JSXZ in="neworders" sel=".paymentmethodcol6">
+              <Z sel=".containerpayment">{order.custom.magento.payment.method}</Z>  
+              </JSXZ>
+            </Z>
+              
+               
             <Z sel=".col-7">
               <JSXZ in="neworders" sel=".icondeletearray" onClick={()=>{
 
@@ -338,7 +372,9 @@ var Orders = createReactClass(
 
               }}>
                 
-              </JSXZ>  
+              </JSXZ> 
+             
+
             </Z> 
           </JSXZ>
         ))}

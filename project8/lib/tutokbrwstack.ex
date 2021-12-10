@@ -24,14 +24,7 @@ defmodule TutoKBRWStack do
 
     ret = Supervisor.start_link(children, opts)
 
-    #Riak.setAllStatusValuesToInit()
-    order = Riak.getValueFromKey("nat_order000147707")
-    |> Map.put("payment_method","idk")
 
-
-
-    {:next_state, {old_state,updated_order}} = ExFSM.Machine.event(order, {:process_payment, []})
-    {:next_state, {old_state,updated_order}} = ExFSM.Machine.event(updated_order, {:verfication, []})
 
     #updated_order = Map.put(updated_order,"payment_method",updated_order["custom"]["magento"]["payment"]["method"])
     #rrr = MyRules.apply_rules(updated_order,[])

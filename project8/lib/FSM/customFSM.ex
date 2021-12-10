@@ -22,6 +22,8 @@ defmodule MyFSM.Paypal do
   deftrans not_verified({:verfication, []}, order) do
     {:next_state, :finished, order}
   end
+
+
 end
 
 
@@ -43,11 +45,13 @@ defmodule MyFSM.Delivery do
   use ExFSM
 
   deftrans init({:process_payment, []}, order) do
-    IO.inspect("DELIVERY")
+    IO.inspect("processpayment")
     {:next_state, :not_verified, order}
   end
 
   deftrans not_verified({:verfication, []}, order) do
+    IO.inspect("verification")
+    Process.sleep(3000)
     {:next_state, :finished, order}
   end
 end

@@ -10891,11 +10891,14 @@ var Layout = createReactClass({
     });
     var p = new Promise(function (resolve, reject) {
       promise.then(function (val) {
+        console.log("RESOLVER", val);
         resolve(val);
       }, function (error) {
+        console.log("REJECTED", error);
         resolve(error);
       });
     }).then(function (res) {
+      console.log("cbthen ", res);
       _this3.setState({ load: null });
     });
 
@@ -11301,23 +11304,47 @@ var Orders = createReactClass({
                   React.createElement(
                     'div',
                     {
-                      className: 'iconarrowrightcolpay'
-                    },
+                      className: 'iconarrowrightcolpay',
+
+                      onClick: function onClick() {
+
+                        _this5.props.loader(HTTP.get("api/order/payment/" + order.id).then(function (res) {
+                          console.log(res);
+                          delete browserState.orders;
+                          Link.GoTo("order", order.id, '');
+                          return true;
+                        }, function (rej) {
+                          console.log("ERROR", rej);
+                          return false;
+                        }));
+                      } },
                     '\uF061'
                   ),
                   React.createElement(
-                    'label',
+                    'div',
                     {
-                      className: 'labellinearray'
+                      className: 'statuscol6'
                     },
-                    'Status: init'
+                    React.createElement(
+                      'div',
+                      {
+                        className: 'containerstatus'
+                      },
+                      order.status.state
+                    )
                   ),
                   React.createElement(
-                    'label',
+                    'div',
                     {
-                      className: 'labellinearray'
+                      className: 'paymentmethodcol6'
                     },
-                    'Payment method : delivery'
+                    React.createElement(
+                      'div',
+                      {
+                        className: 'containerpayment'
+                      },
+                      order.custom.magento.payment.method
+                    )
                   )
                 ),
                 React.createElement(

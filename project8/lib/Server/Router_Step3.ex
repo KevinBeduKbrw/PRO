@@ -23,8 +23,6 @@ defmodule Server.Router_Step3 do
 
   delete "/api/delete/*glob", do: deleteOrder(conn)
 
-
-
   get "/static/loader.gif", do: send_file(conn, 200, "priv/static/loader.gif")
 
   get _ do

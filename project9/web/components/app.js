@@ -578,6 +578,7 @@ function addRemoteProps(props){
       .then(()=>{
         render(<Child {...browserState}/>)
       },(err)=>{
+        console.log(err,params,render)
         render(<ErrorPage message={"Not Found :" + err.url } code={err.http_code}/>, err.http_code)
       })
   },

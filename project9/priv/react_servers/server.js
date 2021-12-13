@@ -11678,7 +11678,7 @@ var Loader = createReactClass({
         className: 'loader-content'
       },
       React.createElement('img', {
-        src: '../static/loader.gif',
+        src: 'public/loader.gif',
         className: 'img-loader',
         alt: ''
       })
@@ -11826,6 +11826,7 @@ module.exports = {
     inferPropsChange(params.path, params.query, params.cookies).then(function () {
       render(React.createElement(Child, browserState));
     }, function (err) {
+      console.log(err, params, render);
       render(React.createElement(ErrorPage, { message: "Not Found :" + err.url, code: err.http_code }), err.http_code);
     });
   },

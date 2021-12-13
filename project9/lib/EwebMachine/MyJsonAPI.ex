@@ -28,6 +28,23 @@ defmodule TestRender do
     layout(render)
   end
 
-  defp cors(conn,_), do:
-    put_resp_header(conn,"content-type","text/html;charset=utf-8")
+  defp cors(conn,_), do: put_resp_header(conn,"content-type","text/html;charset=utf-8")
+end
+
+
+defmodule ImageApi do
+  use Ewebmachine.Builder.Handlers
+
+  plug :cors
+  plug :add_handlers, init: %{}
+
+  content_types_provided do: ["image/png": :to_img]
+
+
+  defp cors(conn,_) do
+    put_resp_header(conn,"Access-Control-Allow-Origin","*")
+    #put_resp_header(conn,"Content-disposition","attachment; filename=\"test.png\"")
+    #put_resp_header(conn,"X-Accel-Redirect", "/tempfile/download/test.png")
+    put_resp_header(conn,"Content-Type", "application/octet-stream")
+  end
 end

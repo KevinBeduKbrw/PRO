@@ -10828,7 +10828,6 @@ var Link = createReactClass({
       }, function (_ref) {
         var http_code = _ref.http_code;
 
-        console.log("http_code", http_code);
         Link.renderFunc(React.createElement(ErrorPage, { message: "Not Found", code: http_code }), http_code); //idem
       });
     },

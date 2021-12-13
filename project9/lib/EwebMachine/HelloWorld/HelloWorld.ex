@@ -68,6 +68,13 @@ defmodule Server.EwebRouter do
     end
   end
 
+  resource "/image" do %{} after
+    plug ImageApi
+    defh to_img do
+      File.read("priv/static/loader.gif")
+    end
+  end
+
   resource "*_" do %{} after
     plug TestRender
     defh resource_exists do
@@ -75,15 +82,4 @@ defmodule Server.EwebRouter do
     end
   end
 
-  resource "/hello/:name" do %{name: name} after
-    content_types_provided do: ['text/html': :to_html]
-    defh to_html, do: "<html><h1>Hello #{state.name}</h1></html>"
-  end
-
-  resource "/error/:status" do %{s: elem(Integer.parse(status),0)} after
-    content_types_provided do: ['text/html': :to_html, 'application/json': :to_json]
-    defh to_html, do: "<h1> Error ! : '#{Ewebmachine.Core.Utils.http_label(state.s)}'</h1>"
-    defh to_json, do: ~s/{"error": #{state.s}, "label": "#{Ewebmachine.Core.Utils.http_label(state.s)}"}/
-    finish_request do: {:halt,state.s}
-  end
 end

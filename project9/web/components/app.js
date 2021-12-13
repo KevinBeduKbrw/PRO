@@ -578,8 +578,8 @@ function addRemoteProps(props){
       .then(()=>{
         render(<Child {...browserState}/>)
       },(err)=>{
-        console.log(err,params,render)
-        render(<ErrorPage message={"Not Found :" + err.url } code={err.http_code}/>, err.http_code)
+        console.log("GGGGGG",err,params,render)
+        render(<ErrorPage message={"Not Found :" + err.url } code={err.http_code} all={err}/>, err.http_code)
       })
   },
   reaxt_client_render(initialProps, render){

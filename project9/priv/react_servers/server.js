@@ -10828,6 +10828,7 @@ var Link = createReactClass({
       }, function (_ref) {
         var http_code = _ref.http_code;
 
+        console.log("http_code", http_code);
         Link.renderFunc(React.createElement(ErrorPage, { message: "Not Found", code: http_code }), http_code); //idem
       });
     },
@@ -11826,8 +11827,8 @@ module.exports = {
     inferPropsChange(params.path, params.query, params.cookies).then(function () {
       render(React.createElement(Child, browserState));
     }, function (err) {
-      console.log(err, params, render);
-      render(React.createElement(ErrorPage, { message: "Not Found :" + err.url, code: err.http_code }), err.http_code);
+      console.log("GGGGGG", err, params, render);
+      render(React.createElement(ErrorPage, { message: "Not Found :" + err.url, code: err.http_code, all: err }), err.http_code);
     });
   },
   reaxt_client_render: function reaxt_client_render(initialProps, render) {

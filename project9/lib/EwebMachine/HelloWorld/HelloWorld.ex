@@ -35,7 +35,7 @@ defmodule Server.EwebRouter do
   resource "/api/delete/:orderid" do %{orderid: orderid} after
     allowed_methods do: ["DELETE"]
     delete_resource do
-      Riak.deleteKey(state.orderid)
+      res = Riak.deleteKey(state.orderid)
       {true,conn,state}
     end
   end

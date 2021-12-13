@@ -11309,7 +11309,6 @@ var Orders = createReactClass({
                       onClick: function onClick() {
 
                         _this5.props.loader(HTTP.get("api/order/payment/" + order.id).then(function (res) {
-                          console.log(res);
                           delete browserState.orders;
                           Link.GoTo("order", order.id, '');
                           return true;
@@ -11365,6 +11364,7 @@ var Orders = createReactClass({
                           callback: function callback(value) {
                             if (value === true) {
                               _this5.props.loader(HTTP.delete("api/delete/" + order.id).then(function (res) {
+
                                 delete browserState.orders;
                                 Link.GoTo("orders");
                                 return true;
@@ -11740,6 +11740,8 @@ var DeleteModal = createReactClass({
 
 function inferPropsChange(path, query, cookies) {
   // the second part of the onPathChange function have been moved here
+  console.log("browserState ----", browserState);
+
   browserState = _extends({}, browserState, {
     path: path, qs: query,
     Link: Link,

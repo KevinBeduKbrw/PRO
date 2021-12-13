@@ -22,7 +22,6 @@ defmodule TestRender do
 
 
   defh to_html do
-    IO.inspect("ICI")
     conn = fetch_query_params(conn)
     render = Reaxt.render!(:app, %{path: conn.request_path, cookies: conn.cookies, query: conn.params},30_000)
     status = render.param || 200

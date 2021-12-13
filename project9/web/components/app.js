@@ -320,7 +320,6 @@ var Orders = createReactClass(
                   this.props.loader(
                     HTTP.get("api/order/payment/"+order.id).then(
                       (res)=>{
-                        console.log(res)
                         delete browserState.orders
                         Link.GoTo("order",order.id,'')
                         return true
@@ -356,6 +355,7 @@ var Orders = createReactClass(
                       this.props.loader(
                         HTTP.delete("api/delete/"+order.id).then(
                           (res)=>{
+                            
                             delete browserState.orders
                             Link.GoTo("orders")
                             return true
@@ -486,6 +486,8 @@ var DeleteModal = createReactClass({
 
 
 function inferPropsChange(path,query,cookies){ // the second part of the onPathChange function have been moved here
+  console.log("browserState ----",browserState)
+  
   browserState = {
     ...browserState,
     path: path, qs: query,

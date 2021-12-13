@@ -1,5 +1,7 @@
 defmodule Server.EwebRouter do
+
   use Ewebmachine.Builder.Resources ; resources_plugs
+
   if Mix.env == :dev, do: plug Ewebmachine.Plug.Debug
 
   resources_plugs error_forwarding: "/error/:status", nomatch_404: true
@@ -10,9 +12,10 @@ defmodule Server.EwebRouter do
   plug Ewebmachine.Plug.Send
 
 
-  resource "api/me" do %{} after
+  resource "/api/me" do %{} after
     plug MyJSONApi
     defh resource_exists do
+      IO.inspect("HERE")
       {true, conn, Map.put(state,:json_obj,%{"name"=>"Albert","id"=>1234})}
     end
   end
@@ -29,6 +32,14 @@ defmodule Server.EwebRouter do
     defh to_json, do: Poison.encode!(Riak.getValueFromKey(state.orderid))
   end
 
+  resource "/api/delete/:orderid" do %{orderid: orderid} after
+    allowed_methods do: ["DELETE"]
+    delete_resource do
+      Riak.deleteKey(state.orderid)
+      {true,conn,state}
+    end
+  end
+
   resource "/api/kbedu_orders" do %{} after
     content_types_provided do: ['application/json': :to_json]
     defh to_json do
@@ -36,7 +47,7 @@ defmodule Server.EwebRouter do
         params = fetch_query_params(conn).query_params
         {page,_} = Integer.parse(Map.get(params,"page"))
         {rows,_} = Integer.parse(Map.get(params,"rows"))
-        type = Map.get(params,"type")
+        _type = Map.get(params,"type")
         query = Map.get(params,"query") |> URI.encode()
 
         Poison.encode!(Riak.afterSearch(Riak.search((if query == "" , do: "*:*", else: query) ,page - 1,rows)))
@@ -51,9 +62,16 @@ defmodule Server.EwebRouter do
     defh to_json do
       Poison.encode!(Riak.getValueFromKey(state.orderid))
       TransactionGenServer.start_link()
-      res = TransactionGenServer.makePayment(id)
+      res = TransactionGenServer.makePayment(state.orderid)
       TransactionGenServer.stop()
       Poison.encode!(res)
+    end
+  end
+
+  resource "*_" do %{} after
+    plug TestRender
+    defh resource_exists do
+      {true, conn, state}
     end
   end
 

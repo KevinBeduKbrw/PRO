@@ -11,8 +11,7 @@ defmodule TransactionGenServer do
   end
 
   def makePayment(id) do
-    IO.inspect("CALL MAKEPAYMENT")
-      GenServer.call(__MODULE__,{:payment , id})
+    GenServer.call(__MODULE__,{:payment , id})
   end
 
   @impl true

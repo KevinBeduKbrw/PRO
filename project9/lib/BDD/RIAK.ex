@@ -82,7 +82,7 @@ defmodule Riak do
   def getIndex() do
     _msg = {:ok,{{_,200,_message},_headers,body}} = :httpc.request(:get,{'#{Riak.url()}/search/index/#{@indexName}', Riak.auth_header()},[],[])
     {_,map} = Poison.decode(body)
-    IO.inspect(map)
+
     map
   end
 
@@ -94,12 +94,12 @@ defmodule Riak do
   def getBucket() do
     _msg = {:ok,{{_,200,_message},_headers,body}} = :httpc.request(:get,{'#{Riak.url()}/buckets/#{@bucketName}/props', Riak.auth_header()},[],[])
     {_,map} = Poison.decode(body)
-    IO.inspect(map)
+
     map
   end
 
   def getValueFromKey(key) do
-    IO.inspect(key)
+
     msg = {:ok,{{_,errorCode,_message},_headers,body}}  = :httpc.request(:get,{'#{Riak.url()}/buckets/#{@bucketName}/keys/#{key}', Riak.auth_header()},[],[])
 
     case errorCode do
@@ -116,7 +116,6 @@ defmodule Riak do
   def insertPropsToBucket(mapProps \\ %{}) do
     {_ok,encodedProps}= Poison.encode(%{"props" => mapProps})
     req = :httpc.request(:put,{'#{Riak.url()}/buckets/#{@bucketName}/props', Riak.auth_header(),'application/json',encodedProps},[],[])
-    IO.inspect(req)
   end
 
   def uploadSchema(schemaPath) do
@@ -131,12 +130,12 @@ defmodule Riak do
 
   def setIndexToBucket(value) do
     req = :httpc.request(:get,{'#{Riak.url()}/buckets/#{@bucketName}/index/#{@indexName}/#{value}', Riak.auth_header()},[],[])
-    IO.inspect(req)
+
   end
 
   def setIndexToBucket(startValue,endValue) do
     req = :httpc.request(:get,{'#{Riak.url()}/buckets/#{@bucketName}/index/#{@indexName}/#{startValue}/#{endValue}', Riak.auth_header()},[],[])
-    IO.inspect(req)
+
   end
 
   def setAllStatusValuesToSmthgs(value) do

@@ -45,13 +45,14 @@ defmodule MyFSM.Delivery do
   use ExFSM
 
   deftrans init({:process_payment, []}, order) do
-    IO.inspect("processpayment")
+    IO.inspect("processpayment ")
     {:next_state, :not_verified, order}
   end
 
   deftrans not_verified({:verfication, []}, order) do
     IO.inspect("verification")
     Process.sleep(3000)
+    IO.inspect("done")
     {:next_state, :finished, order}
   end
 end

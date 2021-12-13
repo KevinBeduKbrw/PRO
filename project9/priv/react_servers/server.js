@@ -10828,6 +10828,7 @@ var Link = createReactClass({
       }, function (_ref) {
         var http_code = _ref.http_code;
 
+        console.log("GGGGGGGGGGGGGGGGG");
         Link.renderFunc(React.createElement(ErrorPage, { message: "Not Found", code: http_code }), http_code); //idem
       });
     },
@@ -11121,7 +11122,7 @@ var Orders = createReactClass({
                 }
               },
               onChange: function onChange(event) {
-                _this5.setState({ searchValue: $(event.target).val() });
+                _this5.setState({ searchValue: event.target.value });
               } })
           ),
           React.createElement(

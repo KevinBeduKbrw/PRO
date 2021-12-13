@@ -24,7 +24,7 @@ defmodule TutoKBRWStack do
     Logger.info("Vroum vroum le diesel...")
 
     ret = Supervisor.start_link(children, opts)
-
+    IO.inspect(Map.count(Riak.getAllKeys()))
 
 
     #updated_order = Map.put(updated_order,"payment_method",updated_order["custom"]["magento"]["payment"]["method"])

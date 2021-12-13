@@ -50,7 +50,10 @@ defmodule Server.EwebRouter do
         _type = Map.get(params,"type")
         query = Map.get(params,"query") |> URI.encode()
 
-        Poison.encode!(Riak.afterSearch(Riak.search((if query == "" , do: "*:*", else: query) ,page - 1,rows)))
+        res = Riak.search((if query == "" , do: "*:*", else: query) ,page - 1,rows)
+        |> Riak.afterSearch()
+        |> Poison.encode!()
+        res
       rescue
         e -> Poison.encode!(%{"error"=> e})
       end
@@ -78,6 +81,8 @@ defmodule Server.EwebRouter do
   resource "*_" do %{} after
     plug TestRender
     defh resource_exists do
+
+
       {true, conn, state}
     end
   end

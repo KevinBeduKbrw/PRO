@@ -129,6 +129,7 @@ var Link = createReactClass({
         ()=>{
           Link.renderFunc(<Child {...browserState}/>) //if we are on server side we render 
         },({http_code})=>{
+          console.log("GGGGGGGGGGGGGGGGG")
           Link.renderFunc(<ErrorPage message={"Not Found"} code={http_code}/>, http_code) //idem
         }
       )
@@ -384,7 +385,7 @@ var Orders = createReactClass(
           this.search()
         }
       }} 
-      onChange={(event)=>{this.setState({searchValue:$(event.target).val()})}}>
+      onChange={(event)=>{this.setState({searchValue:event.target.value})}}>
         <ChildrenZ></ChildrenZ>
       </Z>
       <Z sel =".w-button" onClick={this.search}>

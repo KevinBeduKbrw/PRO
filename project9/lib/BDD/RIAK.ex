@@ -48,6 +48,7 @@ defmodule Riak do
 
   def search(query, page \\ 0, rows \\ 30, sort \\ "creation_date_int") do
     page = page * rows
+    IO.inspect(query)
     msg = {:ok,{{_,200,_message},_headers,body}} = :httpc.request(:get,
           {'#{Riak.url()}/search/query/#{@indexName}/?wt=json&q=#{query}&rows=#{rows}&start=#{ page}&sort=#{sort}+desc', Riak.auth_header()},
           [],[])

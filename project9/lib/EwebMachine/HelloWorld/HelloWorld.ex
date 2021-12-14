@@ -78,6 +78,13 @@ defmodule Server.EwebRouter do
     end
   end
 
+  resource "/filepdf" do %{} after
+    plug PdfApi
+    defh to_pdf do
+      File.read!("priv/static/sample.pdf")
+    end
+  end
+
   resource "*_" do %{} after
     plug TestRender
     defh resource_exists do

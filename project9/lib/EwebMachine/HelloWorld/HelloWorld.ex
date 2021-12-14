@@ -35,7 +35,7 @@ defmodule Server.EwebRouter do
   resource "/api/delete/:orderid" do %{orderid: orderid} after
     allowed_methods do: ["DELETE"]
     delete_resource do
-      res = Riak.deleteKey(state.orderid)
+      Riak.deleteKey(state.orderid)
       {true,conn,state}
     end
   end
@@ -74,7 +74,7 @@ defmodule Server.EwebRouter do
   resource "/image" do %{} after
     plug ImageApi
     defh to_img do
-      File.read("priv/static/loader.gif")
+      File.read!("priv/static/loader.gif")
     end
   end
 

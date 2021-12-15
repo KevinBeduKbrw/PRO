@@ -47,7 +47,6 @@ defmodule Server.EwebRouter do
         params = fetch_query_params(conn).query_params
         {page,_} = Integer.parse(Map.get(params,"page"))
         {rows,_} = Integer.parse(Map.get(params,"rows"))
-        _type = Map.get(params,"type")
         query = Map.get(params,"query") |> URI.encode()
 
         res = Riak.search((if query == "" , do: "*:*", else: query) ,page - 1,rows)
@@ -72,10 +71,11 @@ defmodule Server.EwebRouter do
   end
 
   resource "/image" do %{} after
-    plug ImageApi
-    defh to_img do
-      File.read!("priv/static/loader.gif")
-    end
+
+    #plug ImageApi
+    #defh to_img do
+    #  File.read!("priv/static/loader.gif")
+    #end
   end
 
   resource "/filepdf" do %{} after
@@ -86,10 +86,8 @@ defmodule Server.EwebRouter do
   end
 
   resource "*_" do %{} after
-    plug TestRender
+    plug RenderLayout
     defh resource_exists do
-
-
       {true, conn, state}
     end
   end

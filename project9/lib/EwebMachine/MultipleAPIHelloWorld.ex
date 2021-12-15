@@ -11,9 +11,10 @@ defmodule MyJSONApi do
     put_resp_header(conn,"Access-Control-Allow-Origin","*")
 end
 
-defmodule TestRender do
+defmodule RenderLayout do
   use Ewebmachine.Builder.Handlers
   require EEx
+
   EEx.function_from_file :defp, :layout, "./web/layout.html.eex", [:render]
   plug Plug.Static,  from: :tutokbrwstack, at: "/public"
 
@@ -43,8 +44,6 @@ defmodule ImageApi do
 
   defp cors(conn,_) do
     put_resp_header(conn,"Access-Control-Allow-Origin","*")
-    #put_resp_header(conn,"Content-disposition","attachment; filename=\"test.png\"")
-    #put_resp_header(conn,"X-Accel-Redirect", "/tempfile/download/test.png")
     put_resp_header(conn,"Content-Type", "application/octet-stream")
   end
 end
@@ -60,8 +59,6 @@ defmodule PdfApi do
 
   defp cors(conn,_) do
     put_resp_header(conn,"Access-Control-Allow-Origin","*")
-    #put_resp_header(conn,"Content-disposition","attachment; filename=\"test.png\"")
-    #put_resp_header(conn,"X-Accel-Redirect", "/tempfile/download/test.png")
     put_resp_header(conn,"Content-Type", "application/pdf")
   end
 end

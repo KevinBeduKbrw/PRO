@@ -10745,7 +10745,6 @@ var cn = function cn() {
   var args = arguments,
       classes = {};
   for (var i in args) {
-
     var arg = args[i];
     if (!arg) continue;
     if ('string' === typeof arg || 'number' === typeof arg) {
@@ -10828,7 +10827,6 @@ var Link = createReactClass({
       }, function (_ref) {
         var http_code = _ref.http_code;
 
-        console.log("GGGGGGGGGGGGGGGGG");
         Link.renderFunc(React.createElement(ErrorPage, { message: "Not Found", code: http_code }), http_code); //idem
       });
     },
@@ -10867,7 +10865,6 @@ var Layout = createReactClass({
   displayName: 'Layout',
 
   getInitialState: function getInitialState() {
-
     return {
       modal: false,
       load: null

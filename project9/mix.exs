@@ -17,8 +17,8 @@ defmodule Project2.MixProject do
     [
       extra_applications: [:logger, :inets, :ssl, :ewebmachine, :reaxt],
 
-      mod: {StartHelloWorld, []}
-      #mod: {TutoElixirKBRW, []}
+      #mod: {StartHelloWorld, []}
+      mod: {TutoKBRWStack, []}
     ]
   end
 

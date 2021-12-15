@@ -30,9 +30,6 @@ defmodule Server.Router_Step3 do
     render = Reaxt.render!(:app, %{path: conn.request_path, cookies: conn.cookies, query: conn.params},30_000)
     send_resp(put_resp_header(conn,"content-type","text/html;charset=utf-8"), render.param || 200,layout(render))
   end
-  #get _, do: send_file(conn, 200, "priv/static/index.html")
-
-  #match _, do: send_resp(conn, 404, "Page Not Found")
 
   defp getUser(conn) do
     res = Poison.encode!(%{
@@ -62,10 +59,9 @@ defmodule Server.Router_Step3 do
     |> List.to_string()
 
     TransactionGenServer.start_link()
-    IO.inspect(id)
     res = TransactionGenServer.makePayment(id)
     TransactionGenServer.stop()
-    IO.inspect(res)
+
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, Poison.encode!(res))

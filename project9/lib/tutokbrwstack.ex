@@ -21,7 +21,7 @@ defmodule TutoKBRWStack do
     ]
     opts = [strategy: :one_for_one, name: Supervisor]
 
-    Logger.info("Vroum vroum le diesel...")
+    Logger.info("Tchou tchou le batô...")
 
     ret = Supervisor.start_link(children, opts)
     IO.inspect(Map.count(Riak.getAllKeys()))

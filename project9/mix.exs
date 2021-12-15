@@ -26,7 +26,7 @@ defmodule Project2.MixProject do
   defp deps do
     [
       {:poison, "~> 2.1.0"},
-      {:ewebmachine, path: "./deps/ewebmachine"},
+      {:ewebmachine, "~> 2.3.0",override: true},
       {:reaxt, tag: "v2.1.2", github: "kbrw/reaxt"},
       {:rulex, git: "https://github.com/kbrw/rulex.git"},
       {:exfsm, git: "https://github.com/kbrw/exfsm.git"},

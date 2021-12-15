@@ -60,22 +60,26 @@ defmodule Server.EwebRouter do
   end
 
   resource "/api/order/payment/:orderid" do %{orderid: orderid} after
-    content_types_provided do: ['application/json': :to_json]
-    defh to_json do
+
+
+    allowed_methods do: ["POST"]
+    process_post do
       Poison.encode!(Riak.getValueFromKey(state.orderid))
       TransactionGenServer.start_link()
       res = TransactionGenServer.makePayment(state.orderid)
       TransactionGenServer.stop()
       Poison.encode!(res)
+
+      {true,conn,state}
     end
   end
 
   resource "/image" do %{} after
 
-    #plug ImageApi
-    #defh to_img do
-    #  File.read!("priv/static/loader.gif")
-    #end
+    plug ImageApi
+    defh to_img do
+      File.read!("priv/static/loader.gif")
+    end
   end
 
   resource "/filepdf" do %{} after

@@ -11309,7 +11309,7 @@ var Orders = createReactClass({
 
                       onClick: function onClick() {
 
-                        _this5.props.loader(HTTP.get("api/order/payment/" + order.id).then(function (res) {
+                        _this5.props.loader(HTTP.post("api/order/payment/" + order.id).then(function (res) {
                           delete browserState.orders;
                           Link.GoTo("order", order.id, '');
                           return true;

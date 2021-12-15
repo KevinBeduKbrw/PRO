@@ -319,7 +319,7 @@ var Orders = createReactClass(
                   onClick={()=>{
 
                   this.props.loader(
-                    HTTP.get("api/order/payment/"+order.id).then(
+                    HTTP.post("api/order/payment/"+order.id).then(
                       (res)=>{
                         delete browserState.orders
                         Link.GoTo("order",order.id,'')

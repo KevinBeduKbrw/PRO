@@ -15,8 +15,8 @@ defmodule TutoKBRWStack do
 
     children = [
       {Server.Serv_supervisor,name: SERV,customer: Customer_DB,order: Order_DB},
-      {Plug.Cowboy, scheme: :http, plug: Server.Router_Step3, options: [port: 4001]},
-      {Plug.Cowboy, scheme: :http, plug: Server.EwebRouter, options: [port: 4002]}
+      {Plug.Cowboy, scheme: :http, plug: Server.Router_Step3, options: [port: 4001]}
+      #,{Plug.Cowboy, scheme: :http, plug: Server.EwebRouter, options: [port: 4002]}
 
     ]
     opts = [strategy: :one_for_one, name: Supervisor]

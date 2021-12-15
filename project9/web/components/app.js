@@ -66,7 +66,6 @@ var remoteProps = {
 var cn = function(){
   var args = arguments, classes = {}
   for (var i in args) {
-
     var arg = args[i]
     if(!arg) continue
     if ('string' === typeof arg || 'number' === typeof arg) {
@@ -129,7 +128,6 @@ var Link = createReactClass({
         ()=>{
           Link.renderFunc(<Child {...browserState}/>) //if we are on server side we render 
         },({http_code})=>{
-          console.log("GGGGGGGGGGGGGGGGG")
           Link.renderFunc(<ErrorPage message={"Not Found"} code={http_code}/>, http_code) //idem
         }
       )
@@ -149,8 +147,7 @@ var Link = createReactClass({
         {this.props.children}
       </a>
     )
-  }
-  
+  } 
 })
 
 var Child = createReactClass({
@@ -163,7 +160,6 @@ var Child = createReactClass({
 var Layout = createReactClass(
   {
     getInitialState: function() {
-      
     return {
       modal:false,
       load:null
@@ -186,24 +182,18 @@ var Layout = createReactClass(
     var p = new Promise(function(resolve, reject)
     {
       promise.then((val)=>{
-        console.log("RESOLVER",val)
         resolve(val);
       },
       (error)=>{
-        console.log("REJECTED",error)
         resolve(error)
       })
-     
     }).then((res)=> {  
-      console.log("cbthen ",res)
-        this.setState({load:null});   
+      this.setState({load:null});   
     });
       
     return p
-
   },
   render(){
-    console.log("LAYOUT " , this.props,browserState)
     var _props = {
       ...this.props, modal: this.modal, loader : this.loader
     }
@@ -214,7 +204,6 @@ var Layout = createReactClass(
 
     modal_component = modal_component && modal_component(this.state.modal)
 
-    //loader_component = loader_component && loader_component(this.state.loader)
     return <JSXZ in="neworders" sel=".layout">
         <Z sel=".modal-wrapper" className={cn(classNameZ, {'hidden': !modal_component})}>
         {modal_component}
@@ -225,7 +214,6 @@ var Layout = createReactClass(
         <Z sel=".layout-container">
           <Child {..._props}/>
         </Z>
-        
       </JSXZ>
   }
 });
@@ -235,9 +223,7 @@ var Header = createReactClass(
     remoteProps:[remoteProps.user] 
   },
   render(){
-    console.log("HEADER " , this.props)
     return <JSXZ in="neworders" sel=".header">
-      
         <Z sel=".header-container">
           <Child {...this.props}/>
         </Z>
@@ -247,13 +233,11 @@ var Header = createReactClass(
 
 var Orders = createReactClass(
   {
-    getInitialState: function() {
-      
+    getInitialState: function() {  
     return {
       searchValue:"",
       searchPage:1
     };
-    
   },
   statics: {
     remoteProps:[remoteProps.orders] 
@@ -262,8 +246,6 @@ var Orders = createReactClass(
     alert("OK");
   },
   search(){
-
-
       var req = "api/kbedu_orders?page="+this.state.searchPage+"&rows=30&type=nat_order&query=" + (typeof this.state.searchValue === "undefined" ? "*" : this.state.searchValue)
       this.props.loader(
         HTTP.get(req).then((res) => {
@@ -274,13 +256,10 @@ var Orders = createReactClass(
               value: res
             }
           }
-
           Link.GoTo("orders");
           return res
         },(err)=>console.log("XX",err))
       )
-
-    
   },
   pageNumberChanged(number){
     if(this.state.searchPage <= 1 && number === -1){
@@ -294,7 +273,6 @@ var Orders = createReactClass(
       },()=>{this.search()})
   },
   goToOrderDetail(event){
-    //let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
     Link.GoTo("order",id,'');
   },
   
@@ -302,7 +280,6 @@ var Orders = createReactClass(
     console.log("ORDERS",this.props)
     return <JSXZ in="neworders" sel=".containerr">
         <Z sel=".mainarraybody">
-        
         {this.props.orders.value.map( order => (
           <JSXZ in="neworders" sel=".linemainarraybody" key={order.id}>
             <Z sel=".col-1">{order.id}</Z>
@@ -310,14 +287,14 @@ var Orders = createReactClass(
             <Z sel=".col-3">{order.custom.billing_address.street[0]}</Z>
             <Z sel=".col-4">{ order.custom.items.reduce((p,n)=> p+n.quantity_to_fetch, 0)  }</Z>  
             <Z sel=".col-5">
-              <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={()=>{Link.GoTo("order",order.id,'')}}>
-                
+              <JSXZ in="neworders" sel=".iconarrowrightcoldetails" onClick={()=>{
+                Link.GoTo("order",order.id,'')}}
+              >  
               </JSXZ>  
             </Z> 
             <Z sel=".col-6">
               <JSXZ in="neworders" sel=".iconarrowrightcolpay" 
                   onClick={()=>{
-
                   this.props.loader(
                     HTTP.post("api/order/payment/"+order.id).then(
                       (res)=>{
@@ -332,8 +309,6 @@ var Orders = createReactClass(
                     )
                   )
                   }}>
-                     
-                     
               </JSXZ>
               <JSXZ in="neworders" sel=".statuscol6">
                 <Z sel=".containerstatus">{order.status.state}</Z>
@@ -341,12 +316,9 @@ var Orders = createReactClass(
               <JSXZ in="neworders" sel=".paymentmethodcol6">
               <Z sel=".containerpayment">{order.custom.magento.payment.method}</Z>  
               </JSXZ>
-            </Z>
-              
-               
+            </Z>      
             <Z sel=".col-7">
               <JSXZ in="neworders" sel=".icondeletearray" onClick={()=>{
-
                 this.props.modal({
                   type: 'delete',
                   title: 'Order deletion',
@@ -370,12 +342,8 @@ var Orders = createReactClass(
                     }
                   }
                 })
-
-              }}>
-                
+              }}>           
               </JSXZ> 
-             
-
             </Z> 
           </JSXZ>
         ))}
@@ -404,7 +372,6 @@ var Orders = createReactClass(
         <Z sel=".labelpagenumber-5" onClick={()=>{this.pageNumberChanged(2);}}>
           {this.state.searchPage + 2}
         </Z>
-      
       </JSXZ>
   }
 });
@@ -416,18 +383,12 @@ var Order = createReactClass(
   goBackToOrders(event){
     Link.GoTo("orders",'','');
   },
- 
-  render(){
-    
-    let ord =this.props.order.value;
+  render(){ 
+    let ord = this.props.order.value;
     return <JSXZ in="neworder" sel=".containerr">
         <Z sel=".informationsbar">
-          <JSXZ in="neworder" sel=".leftinformationsbar" >
-            
-            
-          </JSXZ>
-          <JSXZ in="neworder" sel=".rightinformationsbar" >
-            
+          <JSXZ in="neworder" sel=".leftinformationsbar"></JSXZ>
+          <JSXZ in="neworder" sel=".rightinformationsbar" >      
             <Z sel=".customername_informationbar">{ord.length === 0 ? "" : ord.custom.customer.full_name}</Z>
             <Z sel=".address_informationbar">{ord.length === 0 ? "" :ord.custom.customer.email}</Z>
             <Z sel=".idnumber_informationbar">{ord.length === 0 ? "" :ord.id}</Z>
@@ -461,9 +422,7 @@ var ErrorPage= createReactClass({
 
 var Loader= createReactClass({
   render(){
-    return <JSXZ in="loader" sel=".loader-content">
-      
-    </JSXZ>
+    return <JSXZ in="loader" sel=".loader-content"></JSXZ>
   }
 });
 
@@ -475,20 +434,19 @@ var DeleteModal = createReactClass({
     this.props.callback(false);
   },
   render(){
-    return <JSXZ in="modal" sel=".modal-content">
-      <Z sel=".titlemodal">{this.props.title}</Z>
-      <Z sel=".messagemodal">{this.props.message}</Z>
-      <Z sel=".buttonyesmodal" onClick={this.yesModal}><ChildrenZ></ChildrenZ></Z>
-      <Z sel=".buttonnomodal" onClick={this.noModal}><ChildrenZ ></ChildrenZ></Z>
-    </JSXZ>
+    return  <JSXZ in="modal" sel=".modal-content">
+              <Z sel=".titlemodal">{this.props.title}</Z>
+              <Z sel=".messagemodal">{this.props.message}</Z>
+              <Z sel=".buttonyesmodal" onClick={this.yesModal}><ChildrenZ></ChildrenZ></Z>
+              <Z sel=".buttonnomodal" onClick={this.noModal}><ChildrenZ ></ChildrenZ></Z>
+            </JSXZ>
   }
 })
 
 
 
 function inferPropsChange(path,query,cookies){ // the second part of the onPathChange function have been moved here
-  console.log("browserState ----",browserState)
-  
+
   browserState = {
     ...browserState,
     path: path, qs: query,
@@ -557,9 +515,6 @@ function addRemoteProps(props){
   return Promise.all(promise_array)
     .then(xs => xs.reduce(reducer, props), (reject)=>console.log(reject))
     .then((p) => {
-    // recursively call remote props, because props computed from
-    // previous queries can give the missing data/props necessary
-    // to define another query
     return addRemoteProps(p).then(resolve, reject)
   },
   reject)
@@ -568,18 +523,12 @@ function addRemoteProps(props){
 };
 
 
-
-
-
-
-
  module.exports = {
   reaxt_server_render(params, render){
     inferPropsChange(params.path, params.query, params.cookies)
       .then(()=>{
         render(<Child {...browserState}/>)
       },(err)=>{
-        console.log("GGGGGG",err,params,render)
         render(<ErrorPage message={"Not Found :" + err.url } code={err.http_code} all={err}/>, err.http_code)
       })
   },

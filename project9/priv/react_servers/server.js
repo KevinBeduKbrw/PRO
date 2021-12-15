@@ -10892,21 +10892,17 @@ var Layout = createReactClass({
     });
     var p = new Promise(function (resolve, reject) {
       promise.then(function (val) {
-        console.log("RESOLVER", val);
         resolve(val);
       }, function (error) {
-        console.log("REJECTED", error);
         resolve(error);
       });
     }).then(function (res) {
-      console.log("cbthen ", res);
       _this3.setState({ load: null });
     });
 
     return p;
   },
   render: function render() {
-    console.log("LAYOUT ", this.props, browserState);
     var _props = _extends({}, this.props, { modal: this.modal, loader: this.loader
     });
 
@@ -10918,7 +10914,6 @@ var Layout = createReactClass({
 
     modal_component = modal_component && modal_component(this.state.modal);
 
-    //loader_component = loader_component && loader_component(this.state.loader)
     return React.createElement(
       'div',
       {
@@ -10951,7 +10946,6 @@ var Header = createReactClass({
     remoteProps: [remoteProps.user]
   },
   render: function render() {
-    console.log("HEADER ", this.props);
     return React.createElement(
       'div',
       {
@@ -11008,7 +11002,6 @@ var Orders = createReactClass({
   displayName: 'Orders',
 
   getInitialState: function getInitialState() {
-
     return {
       searchValue: "",
       searchPage: 1
@@ -11021,7 +11014,6 @@ var Orders = createReactClass({
     alert("OK");
   },
   search: function search() {
-
     var req = "api/kbedu_orders?page=" + this.state.searchPage + "&rows=30&type=nat_order&query=" + (typeof this.state.searchValue === "undefined" ? "*" : this.state.searchValue);
     this.props.loader(HTTP.get(req).then(function (res) {
       browserState = _extends({}, browserState, {
@@ -11030,7 +11022,6 @@ var Orders = createReactClass({
           value: res
         }
       });
-
       Link.GoTo("orders");
       return res;
     }, function (err) {
@@ -11053,7 +11044,6 @@ var Orders = createReactClass({
     });
   },
   goToOrderDetail: function goToOrderDetail(event) {
-    //let id = $(event.target).parents(".linemainarraybody").children(".col-1").text()
     Link.GoTo("order", id, '');
   },
   render: function render() {
@@ -11293,7 +11283,8 @@ var Orders = createReactClass({
                       className: 'iconarrowrightcoldetails',
                       onClick: function onClick() {
                         Link.GoTo("order", order.id, '');
-                      } },
+                      }
+                    },
                     '\uF061'
                   )
                 ),
@@ -11308,7 +11299,6 @@ var Orders = createReactClass({
                       className: 'iconarrowrightcolpay',
 
                       onClick: function onClick() {
-
                         _this5.props.loader(HTTP.post("api/order/payment/" + order.id).then(function (res) {
                           delete browserState.orders;
                           Link.GoTo("order", order.id, '');
@@ -11357,7 +11347,6 @@ var Orders = createReactClass({
                     {
                       className: 'icondeletearray',
                       onClick: function onClick() {
-
                         _this5.props.modal({
                           type: 'delete',
                           title: 'Order deletion',
@@ -11453,7 +11442,6 @@ var Order = createReactClass({
     Link.GoTo("orders", '', '');
   },
   render: function render() {
-
     var ord = this.props.order.value;
     return React.createElement(
       'div',
@@ -11741,7 +11729,6 @@ var DeleteModal = createReactClass({
 
 function inferPropsChange(path, query, cookies) {
   // the second part of the onPathChange function have been moved here
-  console.log("browserState ----", browserState);
 
   browserState = _extends({}, browserState, {
     path: path, qs: query,
@@ -11814,9 +11801,6 @@ function addRemoteProps(props) {
     }, function (reject) {
       return console.log(reject);
     }).then(function (p) {
-      // recursively call remote props, because props computed from
-      // previous queries can give the missing data/props necessary
-      // to define another query
       return addRemoteProps(p).then(resolve, reject);
     }, reject);
   });
@@ -11827,7 +11811,6 @@ module.exports = {
     inferPropsChange(params.path, params.query, params.cookies).then(function () {
       render(React.createElement(Child, browserState));
     }, function (err) {
-      console.log("GGGGGG", err, params, render);
       render(React.createElement(ErrorPage, { message: "Not Found :" + err.url, code: err.http_code, all: err }), err.http_code);
     });
   },

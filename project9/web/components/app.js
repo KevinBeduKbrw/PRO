@@ -278,6 +278,7 @@ var Orders = createReactClass(
   
   render(){
     console.log("ORDERS",this.props)
+
     return <JSXZ in="neworders" sel=".containerr">
         <Z sel=".mainarraybody">
         {this.props.orders.value.map( order => (
@@ -458,6 +459,7 @@ function inferPropsChange(path,query,cookies){ // the second part of the onPathC
   for(var key in routes) {
     routeProps = routes[key].match(path, query)
     if(routeProps){
+      console.log("KEYYYY",routeProps)
       route = key
       break
     }
@@ -488,7 +490,7 @@ function addRemoteProps(props){
       .map((c)=> c.remoteProps) // -> [[remoteProps.user], [remoteProps.orders], null]
       .filter((p)=> p) 
   );
-
+  console.log("remoteProps",remoteProps)
   var remoteProps = remoteProps
       .map((spec_fun)=> spec_fun(props) ) // -> 1st call [{url: '/api/me', prop: 'user'}, undefined]
                                 // -> 2nd call [{url: '/api/me', prop: 'user'}, {url: '/api/orders?user_id=123', prop: 'orders'}]

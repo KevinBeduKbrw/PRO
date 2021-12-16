@@ -20,6 +20,7 @@ defmodule Server.EwebRouter do
     end
   end
 
+
   resource "/api/orders" do %{} after
     plug MyJSONApi
     defh resource_exists do
@@ -60,16 +61,9 @@ defmodule Server.EwebRouter do
   end
 
   resource "/api/order/payment/:orderid" do %{orderid: orderid} after
-
-
     allowed_methods do: ["POST"]
     process_post do
-      Poison.encode!(Riak.getValueFromKey(state.orderid))
-      TransactionGenServer.start_link()
-      res = TransactionGenServer.makePayment(state.orderid)
-      TransactionGenServer.stop()
-      Poison.encode!(res)
-
+      TransactionGenServer.makePayment(state.orderid)
       {true,conn,state}
     end
   end

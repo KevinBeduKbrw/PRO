@@ -11047,6 +11047,7 @@ var Orders = createReactClass({
     var _this5 = this;
 
     console.log("ORDERS", this.props);
+
     return React.createElement(
       'div',
       {
@@ -11737,6 +11738,7 @@ function inferPropsChange(path, query, cookies) {
   for (var key in routes) {
     routeProps = routes[key].match(path, query);
     if (routeProps) {
+      console.log("KEYYYY", routeProps);
       route = key;
       break;
     }
@@ -11764,7 +11766,7 @@ function addRemoteProps(props) {
     .filter(function (p) {
       return p;
     }));
-
+    console.log("remoteProps", remoteProps);
     var remoteProps = remoteProps.map(function (spec_fun) {
       return spec_fun(props);
     }) // -> 1st call [{url: '/api/me', prop: 'user'}, undefined]
